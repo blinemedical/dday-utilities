@@ -63,11 +63,10 @@ namespace DDayUtilities
 
             // Ensure VERSION and PRODUCTID are both set,
             // as they are required by RFC5545.
-            var copy = _ical.Copy<iCalendar>();
             if (string.IsNullOrEmpty(_ical.Version))
-                copy.Version = CalendarVersions.v2_0;
-            if (string.IsNullOrEmpty(copy.ProductID))
-                copy.ProductID = CalendarProductIDs.Default;
+                _ical.Version = CalendarVersions.v2_0;
+            if (string.IsNullOrEmpty(_ical.ProductID))
+                _ical.ProductID = CalendarProductIDs.Default;
 
             _writer.Write(TextUtil.WrapLines("BEGIN:" + _ical.Name.ToUpper()));
 
@@ -79,16 +78,9 @@ namespace DDayUtilities
             var properties = new List<ICalendarProperty>(_ical.Properties);
             properties.Sort(PropertySorter);
 
-            foreach (ICalendarProperty calendarProperty in properties)
+            foreach (ICalendarProperty property in properties)
             {
-                var stringSerializer = _serializerFactory.Build(
-                    calendarProperty.GetType(),
-                    SerializationContext) as IStringSerializer;
-
-                if (stringSerializer != null)
-                {
-                    _writer.Write(stringSerializer.SerializeToString(calendarProperty));
-                }
+                WriteObject(property);
             }
 
             foreach (ICalendarObject child in _ical.Children)
