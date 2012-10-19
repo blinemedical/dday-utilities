@@ -9,13 +9,15 @@ using DDay.iCal.Serialization.iCalendar;
 
 namespace DDayUtilities
 {
-    public class DDayCalendarWriter : iCalendarSerializer
+    public class DDayCalendarWriter : iCalendarSerializer, IDisposable
     {
         private readonly iCalendar _ical;
         private readonly TextWriter _writer;
 
         private bool _initialized;
         private ISerializerFactory _serializerFactory;
+
+        private bool _closed;
 
         public DDayCalendarWriter(iCalendar iCal, TextWriter writer)
         {
@@ -92,6 +94,19 @@ namespace DDayUtilities
         public void Close()
         {
             _writer.Write(TextUtil.WrapLines("END:" + _ical.Name.ToUpper()));
+            _closed = true;
         }
+
+        #region Implementation of IDisposable
+
+        public void Dispose()
+        {
+            if(!_closed)
+            {
+                Close();
+            }
+        }
+
+        #endregion
     }
 }
