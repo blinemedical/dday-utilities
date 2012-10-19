@@ -55,12 +55,12 @@ namespace DDayUtilities
 
                 using (var stream = new StreamWriter("test2.ical"))
                 {
-                    using (var iCalwriter = new DDayCalendarWriter(iCal, stream))
+                    using (var writer = new DDayCalendarWriter(iCal, stream))
                     {
                         for (int count = 0; count < 100000; count++)
                         {
                             var evnt = new Event {Summary = "Event " + count};
-                            iCalwriter.Write(evnt);
+                            writer.Write(evnt);
                         }
                     }
                 }
