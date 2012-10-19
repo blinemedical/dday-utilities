@@ -55,13 +55,14 @@ namespace DDayUtilities
 
                 using (var stream = new StreamWriter("test2.ical"))
                 {
-                    var iCalwriter = new DDayCalendarWriter(iCal, stream);
-                    for (int count = 0; count < 100000; count++)
+                    using (var iCalwriter = new DDayCalendarWriter(iCal, stream))
                     {
-                        var evnt = new Event { Summary = "Event " + count };
-                        iCalwriter.Write(evnt);
+                        for (int count = 0; count < 100000; count++)
+                        {
+                            var evnt = new Event {Summary = "Event " + count};
+                            iCalwriter.Write(evnt);
+                        }
                     }
-                    iCalwriter.Close();
                 }
             }
             Console.WriteLine("Done: " + (DateTime.Now - startTime));
